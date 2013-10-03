@@ -6,6 +6,24 @@ import matplotlib.pyplot as plt
 import os
 
 def main():
+    # Need to controle everything from this spot in the directory tree
+    # Define some variables that tell the program where the file of images we want analized is.
+    # vid is a string just containing the name of the dated file we want to work with. 
+    # labeled as folows:
+    # Vid<date in month day year>
+    vid = ''
+    # There may be differet movies with different zoom setings and different particles. The next
+    # directory we need to specify is which movie.
+    # named as follows:
+    # Num_<integer starting at 0 going up>
+    vid_num = ''
+    # next we specify the folder with the images laid out in it. These are named as folows:
+    # <number of killavolts>KVpp_<driving frequency>Hz
+    image_folder = ''
+    # Not sure if we will use this in the program but there is also a calibration folder For each
+    # particular setting. There may be one or more calibration images in this folder.
+    calibration_folder = 'Calibration'
+
     # pretty self explanitory. If you do the images made are just the ones with the arrow (no dot)
     do_you_want_images = False
 
