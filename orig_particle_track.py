@@ -11,18 +11,17 @@ def main():
     # vid is a string just containing the name of the dated file we want to work with. 
     # labeled as folows:
     # Vid<date in month day year>
-    vid = ''
+    vid = 'Vids080413'
     # There may be differet movies with different zoom setings and different particles. The next
     # directory we need to specify is which movie.
     # named as follows:
-    # Num_<integer starting at 0 going up>
-    vid_num = ''
-    # next we specify the folder with the images laid out in it. These are named as folows:
-    # <number of killavolts>KVpp_<driving frequency>Hz
-    image_folder = ''
-    # Not sure if we will use this in the program but there is also a calibration folder For each
-    # particular setting. There may be one or more calibration images in this folder.
-    calibration_folder = 'Calibration'
+    # Particle_<integer starting at 0 going up>
+    vid_num = 'Particle_0'
+    # Next we specify the folder for videos that share the same calibration (zoom value or whatnot).
+    calibration = 'Calibration_0'
+    # Next we specify the folder with the images laid out in it. These are named as folows:
+    # ("Pnt" if required")<number of killavolts>KVpp_<driving frequency>Hz
+    im_file = '10000KVpp_10000Hz'
 
     # pretty self explanitory. If you do the images made are just the ones with the arrow (no dot)
     do_you_want_images = False
@@ -30,6 +29,12 @@ def main():
     # this is going to be the array that stors all the particle positiongs over the corse of teh
     # video
     particle_pos = np.array([])
+
+    # get to the right directory and extract the numbers from the file names (convinient later on)
+    os.chdir(vid+'/'+vid_num+'/'+im_file)
+    kil_v_pp = im_file[:im_file.find('K')]
+    hz = im_file[(im_file.find('_')+1):im_file.find('H')]
+    print('current directory is: '+os.getcwd()+'\n'+'KVpp is: '+kil_v_pp+'\n'+'Hz is: '+hz)
 
     if do_you_want_images:
         os.mkdir('./Labeled')
@@ -105,8 +110,10 @@ def main():
 
     fig1 = plt.figure()
     ax1 = fig1.add_subplot(111)
+    ax1.set_xlabel(r'$x$'      , fontsize=20.0)
+    ax1.set_ylabel(r'$\dot{x}$', fontsize=20.0)
     ax1.plot(x_vals,vx_vals)
-    fig1.savefig('phase_space.png')
+    fig1.savefig('x_vx_'+kil_v_pp+'KVpp_'+hz+'Hz'+'.png')
         
     
 if __name__ == '__main__':
