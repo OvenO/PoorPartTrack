@@ -21,17 +21,17 @@ def main():
     calibration = 'Calibration_0'
     # Next we specify the folder with the images laid out in it. These are named as folows:
     # ("Pnt" if required")<number of killavolts>KVpp_<driving frequency>Hz
-    im_file = '10000KVpp_10000Hz'
+    im_file = '1KVpp_3Hz'
 
     # pretty self explanitory. If you do the images made are just the ones with the arrow (no dot)
-    do_you_want_images = False
+    do_you_want_images = True
 
     # this is going to be the array that stors all the particle positiongs over the corse of teh
     # video
     particle_pos = np.array([])
 
     # get to the right directory and extract the numbers from the file names (convinient later on)
-    os.chdir(vid+'/'+vid_num+'/'+im_file)
+    os.chdir(vid+'/'+vid_num+'/'+calibration+'/'+im_file)
     kil_v_pp = im_file[:im_file.find('K')]
     hz = im_file[(im_file.find('_')+1):im_file.find('H')]
     print('current directory is: '+os.getcwd()+'\n'+'KVpp is: '+kil_v_pp+'\n'+'Hz is: '+hz)
@@ -96,10 +96,19 @@ def main():
                 first_x = x
                 first_y = y
             ax.autoscale(False)
-            #ax.plot(x,y, 'ro')
-            ax.annotate('', xy=(x,y),color='white',
-                    xytext=(first_x+120.0,first_y+120.0),arrowprops=dict(facecolor='white',shrink=0.05))
+            # for ploting a red dot at the particle place (better just to use
+            #the anotated arrow so we can see whats actualy there in the image
+            #ax.plot(x,y, 'ro') 
+            # checking to see stuff about vars first_x and y
+            print('first_x is: ' + str(first_x))
+            print('type(first_y[0]) is: ' + str(type(first_y[0])))
+            print('float(first_y[0]) is: ' + str(float(first_y[0])))
+            print('x is: ' +str(x))
+            print('y is: ' +str(y))
+            ax.annotate('',xy=(x[0],y[0]),color='white', xytext=(first_x[0]+120,first_y[0]+120),arrowprops=dict(facecolor='white',shrink=0.05))
+            #ax.annotate('',xy=(x,y),color='white', xytext=(float(first_x[0])+120.0,float(first_y[0])+120.0),arrowprops=dict(facecolor='white',shrink=0.05))
             fig.savefig('Labeled/'+str(i)+'result.png', bbox_inches = 'tight')
+            plt.close(fig)
     
     print('particle_pos is: ' + str(particle_pos))
     print('len(particle_pos) is: ' + str(len(particle_pos)))
