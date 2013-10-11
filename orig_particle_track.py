@@ -23,8 +23,11 @@ def main():
     # ("Pnt" if required")<number of killavolts>KVpp_<driving frequency>Hz
     im_file = 'Pnt8KVpp_3Hz'
 
+    neighborhood_size = 5
+    threshold =60
+
     # pretty self explanitory. If you do the images made are just the ones with the arrow (no dot)
-    do_you_want_images = False
+    do_you_want_images = True
 
     # this is going to be the array that stors all the particle positiongs over the corse of teh
     # video
@@ -51,8 +54,6 @@ def main():
 
     for i,j in enumerate(all_images): 
         print('image number: ' + str(i))
-        neighborhood_size = 5
-        threshold = 50
         
         data = scipy.misc.imread(j)
         
@@ -100,9 +101,11 @@ def main():
             ax.imshow(data)
             #plt.savefig('/tmp/data.png',bbox_inches = 'tight')
             # this is just for the ploting
-            if i == 0:
-                first_x = x[0]
-                first_y = y[0]
+            if i==0:
+                arrow_end_x = x[0]
+                arrow_end_y = y[0]
+            first_x = x[0]
+            first_y = y[0]
             ax.autoscale(False)
             # for ploting a red dot at the particle place (better just to use
             #the anotated arrow so we can see whats actualy there in the image
@@ -113,7 +116,7 @@ def main():
             #print('float(first_y[0]) is: ' + str(float(first_y[0])))
             #print('x is: ' +str(x))
             #print('y is: ' +str(y))
-            ax.annotate('',xy=(first_x,first_y),color='white', xytext=(first_x+120,first_y+120),arrowprops=dict(facecolor='white',shrink=0.05))
+            ax.annotate('',xy=(first_x,first_y),color='white', xytext=(arrow_end_x+120,arrow_end_y+120),arrowprops=dict(facecolor='white',shrink=0.05))
             fig.savefig('Labeled/'+j, bbox_inches = 'tight')
             #fig.savefig('Labeled/'+str(i)+'result.png', bbox_inches = 'tight')
             plt.close(fig)
@@ -127,6 +130,8 @@ def main():
     vx_vals = x_vals[1:]-x_vals[:-1]
     x_vals = x_vals[1:]
 
+    # always make this figure becuase it will ensure the correct axis was used ... i.e. which way is
+    # the camera aligined
     fig1 = plt.figure()
     ax1 = fig1.add_subplot(111)
     ax1.set_xlabel(r'$x$'      , fontsize=20.0)
