@@ -11,7 +11,8 @@ def main():
     # vid is a string just containing the name of the dated file we want to work with. 
     # labeled as folows:
     # Vid<date in month day year>
-    vid = 'Vids080413'
+    #vid = 'Vids080413'
+    vid = 'Vids101613'
     # There may be differet movies with different zoom setings and different particles. The next
     # directory we need to specify is which movie.
     # named as follows:
@@ -21,13 +22,21 @@ def main():
     calibration = 'Calibration_0'
     # Next we specify the folder with the images laid out in it. These are named as folows:
     # ("Pnt" if required")<number of killavolts>KVpp_<driving frequency>Hz
-    im_file = 'Pnt8KVpp_3Hz'
+    im_file = 'Pnt01KVpp_Pnt8Hz'
 
-    neighborhood_size = 5
-    threshold =60
+    neighborhood_size = 10
+    threshold =180
 
     # pretty self explanitory. If you do the images made are just the ones with the arrow (no dot)
-    do_you_want_images = True
+    do_you_want_images = False
+    # again... pretty self explanitory. If you want to restrict the place in the image to look for
+    # the particle uses these variables.
+    want_restrict_image = True
+    # array in form [from here, to here]. remember images axes are fliped everywhich way.
+    restrict_x = [250,300]
+
+    moves_horizontal = True
+    moves_vertical = False
 
     # this is going to be the array that stors all the particle positiongs over the corse of teh
     # video
@@ -56,6 +65,10 @@ def main():
         print('image number: ' + str(i))
         
         data = scipy.misc.imread(j)
+        if want_restrict_image:
+            data = data[restrict_x[0]:restrict_x[1],:,:]            
+
+        print('shape of data is: ' + str(scipy.shape(data)))
         
         data_max = filters.maximum_filter(data, neighborhood_size)
         #print('data_max = filters.maximum_filter(data, neighborhood_size) is: ' +str(data_max))
@@ -69,6 +82,7 @@ def main():
         #print(' maxima[diff==0] (set to zero) is: ' + str(maxima[diff==0]))
         
         labeled, num_objects = ndimage.label(maxima)
+        print('shape of labeled is: ' + str(scipy.shape(labeled)))
         #print('labeled is: ' + str(labeled))
         #print('num_objects is: ' + str(num_objects))
         
@@ -126,7 +140,11 @@ def main():
     
     print('len(particle_pos) is: ' + str(len(particle_pos)))
     particle_pos = particle_pos.reshape(-1,2)
-    x_vals = particle_pos[:,1]
+    if moves_horizontal:
+        x_vals = particle_pos[:,0]
+    if moves_vertical:
+        x_vals = particle_pos[:,1]
+
     vx_vals = x_vals[1:]-x_vals[:-1]
     x_vals = x_vals[1:]
 
